@@ -1,0 +1,46 @@
+﻿@inherits LayoutComponentBase
+@using BlazorApp7.Components.Pages
+
+<RadzenLayout>
+    <RadzenHeader>
+        <ChildContent>
+            <RadzenRow AlignItems="AlignItems.Center">
+                <RadzenColumn Size="3">
+                    <RadzenSidebarToggle Click="@(() => sidebarExpanded = !sidebarExpanded)" />
+                </RadzenColumn>
+                <RadzenColumn Size="6">
+                    <RadzenLabel style="font-size: xx-large" Text="Microsoft auth app" />
+                </RadzenColumn>
+                <RadzenColumn Size="3" Style="text-align: right">
+                    <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Right">
+                        <RadzenProfileMenu>
+                            <Template>
+                                <AuthorizeView>
+                                    <Authorized>
+                                        @context.User.Identity?.Name!
+                                    </Authorized>
+                                </AuthorizeView>
+                            </Template>
+                            <ChildContent>
+                                <Logout />
+                            </ChildContent>
+                        </RadzenProfileMenu>
+                    </RadzenStack>
+                </RadzenColumn>
+            </RadzenRow>
+        </ChildContent>
+    </RadzenHeader>
+    <RadzenSidebar @bind-Expanded="@sidebarExpanded">
+        <RadzenPanelMenu>
+            <RadzenPanelMenuItem Path="/" Text="Home" Icon="home" />
+        </RadzenPanelMenu>
+    </RadzenSidebar>
+    <RadzenBody>
+        @Body
+    </RadzenBody>
+</RadzenLayout>
+
+@code {
+    //NOT working - to be fixed later
+    bool sidebarExpanded = true;
+}
