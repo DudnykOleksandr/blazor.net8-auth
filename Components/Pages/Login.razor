@@ -1,12 +1,7 @@
-﻿@page "/Login"
-@using System.Security.Claims
-@using System.ComponentModel.DataAnnotations
-@using Microsoft.AspNetCore.Authentication
-@using Microsoft.AspNetCore.Identity
-@using Microsoft.AspNetCore.Authentication.Cookies
-@using Microsoft.AspNetCore.Authorization
+﻿@page "/login"
 
-@inject NavigationManager NavManager
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JSRuntime
 
 @attribute [AllowAnonymous]
 
@@ -14,53 +9,23 @@
 <div class="row justify-content-center">
     <div class="col-xl-4 d-flex p-3">
         <RadzenCard Style="width: 100%;">
-            <EditForm method="post" FormName="Login" OnSubmit="OnLoginAsync" Model="UserCredentials">
+            <form Action="@($"api/account/login")" method="post" FormName="Login">
                 <RadzenCard>
                     <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Login</RadzenText>
-                    <InputText @bind-Value="UserCredentials.Username" placeholder="Username"></InputText>
+                    <InputText @bind-Value="userName" id="username" placeholder="Username"></InputText>
                 </RadzenCard>
                 <RadzenCard>
                     <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Password</RadzenText>
-                    <InputText @bind-Value="UserCredentials.Password" placeholder="Password" />
+                    <InputText @bind-Value="password" id="password" placeholder="Password" />
                 </RadzenCard>
                 <RadzenButton ButtonType="ButtonType.Submit" Text="SignIn"></RadzenButton>
-
-            </EditForm>
+            </form>
         </RadzenCard>
     </div>
 </div>
 
-
-
-@code {
-    private bool loginFailed;
-
-    [CascadingParameter]
-    public HttpContext httpcontext { get; set; } = default!;
-
-    [SupplyParameterFromForm]
-    public Credential UserCredentials { get; set; } = new Credential();
-
-    private async Task OnLoginAsync()
-    {
-        //args.Username, args.Password
-
-        var claims = new List<Claim>();
-        claims.Add(new Claim(ClaimTypes.Name, UserCredentials.Username)); // add more claims
-
-        var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-
-        var principal = new ClaimsPrincipal(claimsIdentity);
-
-        // Sign in the user
-        await httpcontext.SignInAsync(principal);
-
-        NavManager.NavigateTo("/");
-    }
-
-    public class Credential
-    {
-        public string Username { get; set; }
-        public string Password { get; set; }
-    }
+@code
+{
+    string userName;
+    string password;
 }

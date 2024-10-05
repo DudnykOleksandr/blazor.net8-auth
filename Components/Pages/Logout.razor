@@ -1,28 +1,5 @@
 ﻿@page "/Logout"
-@using System.Security.Claims
-@using System.ComponentModel.DataAnnotations
-@using Microsoft.AspNetCore.Authentication
-@using Microsoft.AspNetCore.Identity
-@using Microsoft.AspNetCore.Authentication.Cookies
-@using Microsoft.AspNetCore.Authorization
 
-@inject NavigationManager NavManager
-
-<form method="post" @formname="logout" @onsubmit="OnLogoutAsync">
-    <AntiforgeryToken />
-    <RadzenButton class="logout-form-btn" ButtonType="ButtonType.Submit"
-                  Icon="power_settings_new" Text="Log out" />
+<form Action="@($"api/account/logout")" method="get" @formname="logout">
+    <RadzenButton class="logout-form-btn" ButtonType="ButtonType.Submit" Icon="power_settings_new" Text="Log out" />
 </form>
-
-
-@code {
-    [CascadingParameter]
-    public HttpContext httpcontext { get; set; } = default!;
-
-    private async Task OnLogoutAsync()
-    {
-        await httpcontext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-
-        NavManager.NavigateTo("/");
-    }
-}
