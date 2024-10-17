@@ -18,19 +18,24 @@ public class AccountController : ControllerBase
         _logger = logger;
     }
 
-    public async Task<IActionResult> Login([FromForm] string userName="", [FromForm] string password="")
+    public async Task<IActionResult> Login([FromForm] string userName = "", [FromForm] string password = "")
     {
-        var claims = new List<Claim>();
-        claims.Add(new Claim(ClaimTypes.Name, userName)); // add more claims
+        if (!string.IsNullOrEmpty(userName))
+        {
+            var claims = new List<Claim>();
+            claims.Add(new Claim(ClaimTypes.Name, userName)); // add more claims
 
-        var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
-        var principal = new ClaimsPrincipal(claimsIdentity);
+            var principal = new ClaimsPrincipal(claimsIdentity);
 
-        // Sign in the user
-        await HttpContext.SignInAsync(principal);
+            // Sign in the user
+            await HttpContext.SignInAsync(principal);
 
-        return Redirect($"/");
+            return Redirect($"/");
+        }
+        var errorMsg = "User name is null";
+        return Redirect($"{HttpContext.Request.Headers.Origin}/login?errorMessage={errorMsg}");
     }
 
     [HttpGet]

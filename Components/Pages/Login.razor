@@ -1,7 +1,7 @@
 ﻿@page "/login"
 
 @inject NavigationManager NavigationManager
-@inject IJSRuntime JSRuntime
+@using Microsoft.AspNetCore.WebUtilities
 
 @attribute [AllowAnonymous]
 
@@ -9,6 +9,7 @@
 <div class="row justify-content-center">
     <div class="col-xl-4 d-flex p-3">
         <RadzenCard Style="width: 100%;">
+            <RadzenBadge BadgeStyle="BadgeStyle.Danger" Visible="@errorMessageVisible" Text="@errorMessage" />
             <form Action="@($"api/account/login")" method="post" FormName="Login">
                 <RadzenCard>
                     <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Login</RadzenText>
@@ -26,6 +27,22 @@
 
 @code
 {
+    private string? errorMessage;
+    private bool errorMessageVisible;
+
+    protected override void OnInitialized()
+    {
+        // Get the current URL
+        var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
+
+        // Parse the query parameters to extract the errorMessage
+        if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("errorMessage", out var errorMessageValue))
+        {
+            errorMessage = errorMessageValue;
+            errorMessageVisible = true;
+        }
+    }
+
     string userName;
     string password;
 }
